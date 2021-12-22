@@ -1,12 +1,14 @@
-import React from 'react'
-import './index.css'
+import React from "react"
+import ReactDOM from "react-dom"
+import "antd/dist/antd.css"
+import ExcelPage from "./components/excelPage"
 
-const App = () => {
-    return (
-      <div>
-        <h1>ram ram</h1>
-      </div>
-    ) 
-
+function App() {
+  return (
+    <>
+      <ExcelPage />
+    </>
+  )
 }
+
 export default App
