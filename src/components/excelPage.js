@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Table, Button, Popconfirm, Row, Col, Upload } from "antd"
+import { Table, Button, Row, Col, Upload } from "antd"
 import { ExcelRenderer } from "react-excel-renderer"
 
 export default class ExcelPage extends Component {
@@ -14,7 +14,13 @@ export default class ExcelPage extends Component {
           title: "S.No.",
           dataIndex: "key",
           editable: "true"
-        },{
+        },
+        {
+          title: "Discount %",
+          dataIndex: "discount",
+          editable: "true"
+        },
+        {
           title: "UIC",
           dataIndex: "uic",
           editable: "true"
@@ -35,21 +41,8 @@ export default class ExcelPage extends Component {
           editable: "true"
         },
         {
-          title: "Action",
-          dataIndex: "action",
-          render: (text, record) =>
-            this.state.rows.length >= 1 ? (
-              <Popconfirm
-                title="Sure to delete?"
-                onConfirm={() => this.handleDelete(record.key)}
-              >
-                {/* <Icon
-                  type="delete"
-                  theme="filled"
-                  style={{ color: "red", fontSize: "20px" }}
-                /> */}
-              </Popconfirm>
-            ) : null
+          title: "Product Image URL",
+          dataIndex: "url",
         }
       ]
     };
@@ -119,10 +112,12 @@ export default class ExcelPage extends Component {
           if (row && row !== "undefined") {
             newRows.push({
               key: index + 1,
+              discount: row[2] && row[3] ? (((row[2] - row[3])/row[2])*100).toFixed(0) + "%" : "",
               uic: row[0],
               name: row[1],
               mrp: row[2],
               offer: row[3],
+              url: row[4] && <a href={row[4]} target="_blank" >view</a>  
             })
           }
         })
@@ -145,9 +140,6 @@ export default class ExcelPage extends Component {
 
   handleSubmit = async () => {
     console.log("submitting: ", this.state.rows)
-    //submit to API
-    //if successful, banigate and clear the data
-    //this.setState({ rows: [] })
   }
 
   handleDelete = key => {
@@ -166,16 +158,14 @@ export default class ExcelPage extends Component {
         onCell: record => ({
           record,
           editable: col.editable,
-          dataIndex: col.dataIndex,
           title: col.title,
-          handleSave: this.handleSave,
         }),
       }
     })
 
     return (
       <>
-        <h1>Importing Excel Component</h1>
+        <h1>DRAFT CONTENT FOR CREATIVES</h1>
         <Row gutter={16} justify="space-between">
           <Col
             span={8}
@@ -186,9 +176,6 @@ export default class ExcelPage extends Component {
               marginBottom: "5%",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div className="page-title">Upload Farmer Data</div>
-            </div>
           </Col>
           <Col
             span={8}
@@ -204,7 +191,7 @@ export default class ExcelPage extends Component {
                   type="primary"
                   style={{ marginBottom: 16, marginLeft: 10 }}
                 >
-                  Submit Data
+                  EXPORT CONTENT
                 </Button>
               </>
             )}
@@ -218,8 +205,7 @@ export default class ExcelPage extends Component {
             multiple={false}
           >
             <Button>
-              {/* <Icon type="upload" /> */}
-               Click to Upload Excel File
+               IMPORT EXCEL
             </Button>
           </Upload>
         </div>
