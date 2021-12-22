@@ -11,18 +11,27 @@ export default class ExcelPage extends Component {
       errorMessage: null,
       columns: [
         {
-          title: "NAME",
+          title: "S.No.",
+          dataIndex: "key",
+          editable: "true"
+        },{
+          title: "UIC",
+          dataIndex: "uic",
+          editable: "true"
+        },
+        {
+          title: "Product Name",
           dataIndex: "name",
           editable: "true"
         },
         {
-          title: "AGE",
-          dataIndex: "age",
+          title: "MRP",
+          dataIndex: "mrp",
           editable: "true"
         },
         {
-          title: "GENDER",
-          dataIndex: "gender",
+          title: "Offer Price",
+          dataIndex: "offer",
           editable: "true"
         },
         {
@@ -109,10 +118,11 @@ export default class ExcelPage extends Component {
         resp.rows.slice(1).map((row, index) => {
           if (row && row !== "undefined") {
             newRows.push({
-              key: index,
-              name: row[0],
-              age: row[1],
-              gender: row[2],
+              key: index + 1,
+              uic: row[0],
+              name: row[1],
+              mrp: row[2],
+              offer: row[3],
             })
           }
         })
