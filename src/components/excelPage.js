@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { Table, Button, Row, Col, Upload } from "antd"
 import { ExcelRenderer } from "react-excel-renderer"
+import SaveList from './SaveList'
 
 export default class ExcelPage extends Component {
   constructor(props) {
@@ -102,6 +103,28 @@ export default class ExcelPage extends Component {
       })
       return false
     }
+
+    const download = e => {
+      console.log(e.target.href);
+      fetch(e.target.href, {
+        method: "GET",
+        headers: {}
+      })
+        .then(response => {
+          response.arrayBuffer().then(function(buffer) {
+            const url = window.URL.createObjectURL(new Blob([buffer]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "image.jpg"); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
     //just pass the fileObj as parameter
     ExcelRenderer(fileObj, (err, resp) => {
       if (err) {
@@ -117,7 +140,7 @@ export default class ExcelPage extends Component {
               name: row[1] !== undefined && row[1],
               mrp: row[2] !== undefined && row[2],
               offer: row[3] !== undefined && row[3],
-              url: row[4] !== undefined && <a href={row[4]} target="_blank" >view</a>
+              url: row[4] !== undefined && <a href={row[4]} download onClick={e => download(e)} target="_blank" >view</a>
             })
           }
         })
@@ -164,22 +187,6 @@ export default class ExcelPage extends Component {
       }
     })
 
-    if (this.state.rows.length > 0) {
-      const discount = () => {
-        return this.state.rows.map(r => r.discount)
-      }
-      const name = () => {
-        return this.state.rows.map(r => r.name)
-      }
-      const mrp = () => {
-        return this.state.rows.map(r => r.mrp)
-      }
-      const offer = () => {
-        return this.state.rows.map(r => r.offer)
-      }
-  
-    }
-
     return (
       <>
         <h1>DRAFT CONTENT FOR CREATIVES</h1>
@@ -202,14 +209,16 @@ export default class ExcelPage extends Component {
             {this.state.rows.length > 0 && (
               <>
                 {" "}
-                <Button
+                {/* <Button
                   onClick={this.handleSubmit}
                   size="large"
                   type="primary"
                   style={{ marginBottom: 16, marginLeft: 10 }}
                 >
-                  EXPORT CONTENT
-                </Button>
+                  
+               
+                </Button> */}
+                <SaveList list={this.state.rows} />
               </>
             )}
           </Col>
