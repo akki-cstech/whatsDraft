@@ -111,13 +111,13 @@ export default class ExcelPage extends Component {
         resp.rows.slice(1).map((row, index) => {
           if (row && row !== "undefined") {
             newRows.push({
-              key: index + 1,
-              discount: row[2] && row[3] ? (((row[2] - row[3])/row[2])*100).toFixed(0) + "%" : "",
-              uic: row[0],
-              name: row[1],
-              mrp: row[2],
-              offer: row[3],
-              url: row[4] && <a href={row[4]} target="_blank" >view</a>  
+              key: row[2] !== undefined && index + 1,
+              discount: row[2] !== undefined && row[3] !== undefined && (((row[2] - row[3]) / row[2]) * 100).toFixed(0) + "%",
+              uic: row[0] !== undefined && row[0],
+              name: row[1] !== undefined && row[1],
+              mrp: row[2] !== undefined && row[2],
+              offer: row[3] !== undefined && row[3],
+              url: row[4] !== undefined && <a href={row[4]} target="_blank" >view</a>
             })
           }
         })
@@ -127,6 +127,7 @@ export default class ExcelPage extends Component {
           })
           return false
         } else {
+          newRows = newRows.filter(r => r.key !== false)
           this.setState({
             cols: resp.cols,
             rows: newRows,
@@ -139,7 +140,7 @@ export default class ExcelPage extends Component {
   }
 
   handleSubmit = async () => {
-    console.log("submitting: ", this.state.rows)
+    console.log("submitting: ", this.state.rows)  
   }
 
   handleDelete = key => {
@@ -148,7 +149,7 @@ export default class ExcelPage extends Component {
   }
 
   render() {
-   
+
     const columns = this.state.columns.map(col => {
       if (!col.editable) {
         return col
@@ -162,6 +163,22 @@ export default class ExcelPage extends Component {
         }),
       }
     })
+
+    if (this.state.rows.length > 0) {
+      const discount = () => {
+        return this.state.rows.map(r => r.discount)
+      }
+      const name = () => {
+        return this.state.rows.map(r => r.name)
+      }
+      const mrp = () => {
+        return this.state.rows.map(r => r.mrp)
+      }
+      const offer = () => {
+        return this.state.rows.map(r => r.offer)
+      }
+  
+    }
 
     return (
       <>
@@ -184,7 +201,7 @@ export default class ExcelPage extends Component {
           >
             {this.state.rows.length > 0 && (
               <>
-               {" "}
+                {" "}
                 <Button
                   onClick={this.handleSubmit}
                   size="large"
@@ -205,7 +222,7 @@ export default class ExcelPage extends Component {
             multiple={false}
           >
             <Button>
-               IMPORT EXCEL
+              IMPORT EXCEL
             </Button>
           </Upload>
         </div>
