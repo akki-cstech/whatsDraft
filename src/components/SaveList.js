@@ -3,8 +3,21 @@ import { Button } from "antd"
 import 'antd/dist/antd.css';
 
 export const SaveList = ({ list }) => {
-    const downloadTxtFile = () => {
+    const downloadTxtFile = async () => {
         // const file = new Blob([document.getElementById('myInput').value], { type: 'text/plain' });
+        
+        for (var i = 0; i< list.length; i++) {
+            const myUrl = list[i].url.props.href
+            const response = await fetch(myUrl);
+            response.blob().then(blob => {
+                let url = window.URL.createObjectURL(blob);
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = `${i}.jpg`;
+                a.click();
+            });
+          }
+        
         const discount = () => {
             const d = list.map(r => r.discount)
             return new Blob([d.join('\n')], { type: 'text/plain' })

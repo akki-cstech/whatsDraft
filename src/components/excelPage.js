@@ -49,38 +49,6 @@ export default class ExcelPage extends Component {
     };
   }
 
-  handleSave = row => {
-    const newData = [...this.state.rows]
-    const index = newData.findIndex(item => row.key === item.key)
-    const item = newData[index]
-    newData.splice(index, 1, {
-      ...item,
-      ...row,
-    })
-    this.setState({ rows: newData })
-  }
-
-  checkFile(file) {
-    let errorMessage = "";
-    if (!file || !file[0]) {
-      return;
-    }
-    const isExcel =
-      file[0].type === "application/vnd.ms-excel" ||
-      file[0].type ===
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    if (!isExcel) {
-      errorMessage = "You can only upload Excel file!";
-    }
-    console.log("file", file[0].type);
-    const isLt2M = file[0].size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      errorMessage = "File must be smaller than 2MB!";
-    }
-    console.log("errorMessage", errorMessage);
-    return errorMessage;
-  }
-
   fileHandler = fileList => {
     console.log("fileList", fileList)
     let fileObj = fileList
@@ -113,11 +81,7 @@ export default class ExcelPage extends Component {
         .then(response => {
           response.arrayBuffer().then(function(buffer) {
             const url = window.URL.createObjectURL(new Blob([buffer]));
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", "image.jpg"); //or any other extension
-            document.body.appendChild(link);
-            link.click();
+            return <img src={url} width="20px" height="20px" />
           });
         })
         .catch(err => {
@@ -138,9 +102,9 @@ export default class ExcelPage extends Component {
               discount: row[2] !== undefined && row[3] !== undefined && (((row[2] - row[3]) / row[2]) * 100).toFixed(0) + "%",
               uic: row[0] !== undefined && row[0],
               name: row[1] !== undefined && row[1],
-              mrp: row[2] !== undefined && row[2],
-              offer: row[3] !== undefined && row[3],
-              url: row[4] !== undefined && <a href={row[4]} download onClick={e => download(e)} target="_blank" >view</a>
+              mrp: row[2] !== undefined && `₹${row[2]}`,
+              offer: row[3] !== undefined && `₹${row[3]}`,
+              url: row[0] !== undefined && <a href={`https://app.dealsdray.com/thumnailimageDynamic_product.aspx?name=${row[0]}&filename=${row[0]}.jpg&size=170&foldername=productfiles&suppliercode=SKU-S1258843`} onClick={e => download(e)} target="_blank" >view</a>
             })
           }
         })
@@ -151,6 +115,7 @@ export default class ExcelPage extends Component {
           return false
         } else {
           newRows = newRows.filter(r => r.key !== false)
+          newRows.sort((a, b) => parseInt(b.discount) - parseInt(a.discount))
           this.setState({
             cols: resp.cols,
             rows: newRows,
@@ -160,15 +125,6 @@ export default class ExcelPage extends Component {
       }
     })
     return false
-  }
-
-  handleSubmit = async () => {
-    console.log("submitting: ", this.state.rows)  
-  }
-
-  handleDelete = key => {
-    const rows = [...this.state.rows]
-    this.setState({ rows: rows.filter(item => item.key !== key) })
   }
 
   render() {
