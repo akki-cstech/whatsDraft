@@ -98,7 +98,7 @@ export default class ExcelPage extends Component {
         resp.rows.slice(1).map((row, index) => {
           if (row && row !== "undefined") {
             newRows.push({
-              key: row[2] !== undefined && index + 1,
+              // key: row[2] !== undefined && index + 1,
               discount: row[2] !== undefined && row[3] !== undefined && (((row[2] - row[3]) / row[2]) * 100).toFixed(0) + "%",
               uic: row[0] !== undefined && row[0],
               name: row[1] !== undefined && row[1],
@@ -114,8 +114,17 @@ export default class ExcelPage extends Component {
           })
           return false
         } else {
-          newRows = newRows.filter(r => r.key !== false)
+          newRows = newRows.filter(r => r.discount !== false)
           newRows.sort((a, b) => parseInt(b.discount) - parseInt(a.discount))
+          newRows = newRows.map((n, i) => {
+            if(n.discount !== false){
+              return {
+                key: i + 1,
+                ...n
+              }
+            }
+          })
+
           this.setState({
             cols: resp.cols,
             rows: newRows,
