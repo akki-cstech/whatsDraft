@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Table, Button, Row, Col, Upload } from "antd"
+import { Table, Button, Upload } from "antd"
 import { ExcelRenderer } from "react-excel-renderer"
 import SaveList from './SaveList'
 
@@ -188,51 +188,19 @@ export default class ExcelPage extends Component {
     })
 
     return (
-      <>
-        <h1>DRAFT CONTENT FOR CREATIVES</h1>
-        <Row gutter={16} justify="space-between">
-          <Col
-            span={8}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "5%",
-            }}
-          >
-          </Col>
-          <Col
-            span={8}
-            align="right"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            {this.state.rows.length > 0 && (
-              <>
-                {" "}
-                {/* <Button
-                  onClick={this.handleSubmit}
-                  size="large"
-                  type="primary"
-                  style={{ marginBottom: 16, marginLeft: 10 }}
-                >
-                  
-               
-                </Button> */}
-                <SaveList list={this.state.rows} />
-              </>
-            )}
-          </Col>
-        </Row>
+      <div className="container mt-4">
+        <h1 style={{color: "#59d999"}} className="text-center" >DRAFT CONTENT FOR CREATIVES</h1>
         <div>
+        {this.state.rows.length > 0 && <SaveList list={this.state.rows} />}
           <Upload
             name="file"
             beforeUpload={this.fileHandler}
             onRemove={() => this.setState({ rows: [] })}
             multiple={false}
           >
-            <Button>
+            {this.state.rows.length === 0 &&  <Button>
               IMPORT EXCEL
-            </Button>
+            </Button>}
           </Upload>
         </div>
         <div style={{ marginTop: 20 }}>
@@ -243,7 +211,7 @@ export default class ExcelPage extends Component {
           />
         </div>
 
-      </>
+      </div>
     )
   }
 }

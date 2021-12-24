@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { Button } from "antd"
+import 'antd/dist/antd.css';
 
 export const SaveList = ({ list }) => {
     const downloadTxtFile = () => {
@@ -47,9 +49,11 @@ export const SaveList = ({ list }) => {
 
 
     return (
-        <div>
-            <button onClick={downloadTxtFile}>Download txt</button>
+        <div className="d-flex justify-content-between">
+            <h3 style={{ color: "#59d999" }} >Products has been imported</h3>
+            <Button onClick={downloadTxtFile} >EXPORT CONTENT</Button>
         </div>
+
     );
 }
 
