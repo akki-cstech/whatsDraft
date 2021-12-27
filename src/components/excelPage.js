@@ -72,23 +72,6 @@ export default class ExcelPage extends Component {
       return false
     }
 
-    const download = e => {
-      console.log(e.target.href);
-      fetch(e.target.href, {
-        method: "GET",
-        headers: {}
-      })
-        .then(response => {
-          response.arrayBuffer().then(function(buffer) {
-            const url = window.URL.createObjectURL(new Blob([buffer]));
-            return <img src={url} width="20px" height="20px" />
-          });
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    };
-
     //just pass the fileObj as parameter
     ExcelRenderer(fileObj, (err, resp) => {
       if (err) {
@@ -104,7 +87,7 @@ export default class ExcelPage extends Component {
               name: row[1] !== undefined && row[1],
               mrp: row[2] !== undefined && `₹${row[2]}`,
               offer: row[3] !== undefined && `₹${row[3]}`,
-              url: row[0] !== undefined && <a href={`https://app.dealsdray.com/thumnailimageDynamic_product.aspx?name=${row[0]}&filename=${row[0]}.jpg&size=170&foldername=productfiles&suppliercode=SKU-S1258843`} onClick={e => download(e)} target="_blank" >view</a>
+              url: row[0] !== undefined && <img src={`https://app.dealsdray.com/thumnailimageDynamic_product.aspx?name=${row[0]}&filename=${row[0]}.jpg&size=170&foldername=productfiles&suppliercode=SKU-S1258843`} width="40px" height="67" />
             })
           }
         })

@@ -7,7 +7,7 @@ export const SaveList = ({ list }) => {
         // const file = new Blob([document.getElementById('myInput').value], { type: 'text/plain' });
         
         for (var i = 0; i< list.length; i++) {
-            const myUrl = list[i].url.props.href
+            const myUrl = list[i].url.props.src
             const response = await fetch(myUrl);
             response.blob().then(blob => {
                 let url = window.URL.createObjectURL(blob);
