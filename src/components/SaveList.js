@@ -1,23 +1,23 @@
 import React from 'react'
 import { Button } from "antd"
+import { saveAs } from 'file-saver';
 import 'antd/dist/antd.css';
 
 export const SaveList = ({ list }) => {
-    const downloadTxtFile = async () => {
-        // const file = new Blob([document.getElementById('myInput').value], { type: 'text/plain' });
-        
-        for (var i = 0; i< list.length; i++) {
+    var JSZip = require("jszip");
+    let zip = new JSZip();
+
+    const handleDownloadClick = async () => {
+
+        for (var i = 0; i < list.length; i++) {
             const myUrl = list[i].url.props.src
             const response = await fetch(myUrl);
             response.blob().then(blob => {
-                let url = window.URL.createObjectURL(blob);
-                let a = document.createElement('a');
-                a.href = url;
-                a.download = `${i}.jpg`;
-                a.click();
+                var img = zip.folder("images");
+                img.file(`${i}.jpg`, blob, { base64: true });
             });
-          }
-        
+        }
+
         const discount = () => {
             const d = list.map(r => r.discount)
             return new Blob([d.join('\n')], { type: 'text/plain' })
@@ -35,36 +35,23 @@ export const SaveList = ({ list }) => {
             return new Blob([o.join('\n')], { type: 'text/plain' })
         }
 
-        const element = document.createElement("a");
-        element.href = URL.createObjectURL(discount());
-        element.download = "margin.txt";
-        document.body.appendChild(element); // Required for this to work in FireFox
-        element.click();
+        zip.file("margin.txt", discount());
+        zip.file("product-name.txt", name());
+        zip.file("mrp.txt", mrp());
+        zip.file("offer-price.txt", offer());
 
-        const element2 = document.createElement("a");
-        element2.href = URL.createObjectURL(name());
-        element2.download = "product-name.txt";
-        document.body.appendChild(element2); // Required for this to work in FireFox
-        element2.click();
-
-        const element3 = document.createElement("a");
-        element3.href = URL.createObjectURL(mrp());
-        element3.download = "mrp.txt";
-        document.body.appendChild(element3); // Required for this to work in FireFox
-        element3.click();
-
-        const element4 = document.createElement("a");
-        element4.href = URL.createObjectURL(offer());
-        element4.download = "offer-price.txt";
-        document.body.appendChild(element4); // Required for this to work in FireFox
-        element4.click();
+        zip.generateAsync({ type: "blob" })
+            .then(function (content) {
+                // see FileSaver.js
+                saveAs(content, "whatsDraft.zip");
+            });
     }
 
 
     return (
         <div className="d-flex justify-content-between">
             <h3 style={{ color: "#59d999" }} >Products has been imported</h3>
-            <Button onClick={downloadTxtFile} >EXPORT CONTENT</Button>
+            <Button onClick={handleDownloadClick} >EXPORT CONTENT</Button>
         </div>
 
     );

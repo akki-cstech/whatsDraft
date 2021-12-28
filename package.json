@@ -8,6 +8,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "antd": "^4.17.4",
+    "file-saver": "^2.0.5",
     "fs": "^0.0.1-security",
     "jszip": "^3.7.1",
     "react": "^17.0.2",
