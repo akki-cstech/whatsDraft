@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button } from "antd"
 import { saveAs } from 'file-saver';
-import 'antd/dist/antd.css';
 
 export const SaveList = ({ list }) => {
     var JSZip = require("jszip");
@@ -9,12 +8,12 @@ export const SaveList = ({ list }) => {
 
     const handleDownloadClick = async () => {
 
-        for (var i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
             const myUrl = list[i].url.props.src
             const response = await fetch(myUrl);
             response.blob().then(blob => {
-                var img = zip.folder("images");
-                img.file(`${i}.jpg`, blob, { base64: true });
+                var img = zip.folder("1. images");
+                img.file(`${i+1}.jpg`, blob, { base64: true });
             });
         }
 
@@ -35,15 +34,16 @@ export const SaveList = ({ list }) => {
             return new Blob([o.join('\n')], { type: 'text/plain' })
         }
 
-        zip.file("margin.txt", discount());
-        zip.file("product-name.txt", name());
-        zip.file("mrp.txt", mrp());
-        zip.file("offer-price.txt", offer());
+        zip.file("2. margin.txt", discount());
+        zip.file("3. product-name.txt", name());
+        zip.file("4. mrp.txt", mrp());
+        zip.file("5. offer-price.txt", offer());
+
+        const d = new Date()
 
         zip.generateAsync({ type: "blob" })
             .then(function (content) {
-                // see FileSaver.js
-                saveAs(content, "whatsDraft.zip");
+                saveAs(content, `${d.getDate()}-${d.getMonth()}-${d.getFullYear().toString().slice(2)}-${d.getHours()}-${d.getMinutes()} CONTENT FOR CREATIVES`);
             });
     }
 

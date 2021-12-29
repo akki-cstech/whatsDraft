@@ -1,7 +1,7 @@
-import React, { Component } from "react"
-import { Table, Button, Upload } from "antd"
-import { ExcelRenderer } from "react-excel-renderer"
-import SaveList from './SaveList'
+import { Button, Table, Upload } from "antd";
+import React, { Component } from "react";
+import { ExcelRenderer } from "react-excel-renderer";
+import SaveList from './SaveList';
 
 export default class ExcelPage extends Component {
   constructor(props) {
@@ -78,7 +78,7 @@ export default class ExcelPage extends Component {
         console.log(err)
       } else {
         let newRows = []
-        resp.rows.slice(1).map((row, index) => {
+        resp.rows.slice(1).map((row) => {
           if (row && row !== "undefined") {
             newRows.push({
               // key: row[2] !== undefined && index + 1,
@@ -87,7 +87,7 @@ export default class ExcelPage extends Component {
               name: row[1] !== undefined && row[1],
               mrp: row[2] !== undefined && `₹${row[2]}`,
               offer: row[3] !== undefined && `₹${row[3]}`,
-              url: row[0] !== undefined && <img src={`https://app.dealsdray.com/thumnailimageDynamic_product.aspx?name=${row[0]}&filename=${row[0]}.jpg&size=170&foldername=productfiles&suppliercode=SKU-S1258843`} width="40px" height="67" />
+              url: row[0] !== undefined && <a href={`https://app.dealsdray.com/thumnailimageDynamic_product.aspx?name=${row[0]}&filename=${row[0]}.jpg&size=170&foldername=productfiles&suppliercode=SKU-S1258843`} target="_blank" ><img src={`https://app.dealsdray.com/thumnailimageDynamic_product.aspx?name=${row[0]}&filename=${row[0]}.jpg&size=170&foldername=productfiles&suppliercode=SKU-S1258843`} alt={row[1]} width="40px" /></a>
             })
           }
         })
@@ -100,12 +100,13 @@ export default class ExcelPage extends Component {
           newRows = newRows.filter(r => r.discount !== false)
           newRows.sort((a, b) => parseInt(b.discount) - parseInt(a.discount))
           newRows = newRows.map((n, i) => {
-            if(n.discount !== false){
+            if (n.discount !== false) {
               return {
                 key: i + 1,
                 ...n
               }
             }
+            return null
           })
 
           this.setState({
@@ -136,29 +137,32 @@ export default class ExcelPage extends Component {
     })
 
     return (
-      <div className="container mt-4">
-        <h1 style={{color: "#59d999"}} className="text-center" >DRAFT CONTENT FOR CREATIVES</h1>
+      <div className="container d-flex justify-content-center flex-column">
+        <h1 style={{ color: "#59d999" }} className="text-center" >DRAFT CONTENT FOR CREATIVES</h1>
         <div>
-        {this.state.rows.length > 0 && <SaveList list={this.state.rows} />}
+          {this.state.rows.length > 0 && <SaveList list={this.state.rows} />}
+          {this.state.rows.length === 0 && <div>
           <Upload
             name="file"
             beforeUpload={this.fileHandler}
             onRemove={() => this.setState({ rows: [] })}
             multiple={false}
           >
-            {this.state.rows.length === 0 &&  <Button>
-              IMPORT EXCEL
-            </Button>}
+              <Button>
+                IMPORT EXCEL
+              </Button>
           </Upload>
+          <a href="/sample.xlsx" >download sample excel</a>
+         </div>
+          }
         </div>
         <div style={{ marginTop: 20 }}>
-          <Table
+          {this.state.rows.length > 0 && <Table
             rowClassName={() => "editable-row"}
             dataSource={this.state.rows}
             columns={columns}
-          />
+          />}
         </div>
-
       </div>
     )
   }
