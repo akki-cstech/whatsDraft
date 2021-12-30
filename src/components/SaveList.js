@@ -9,7 +9,7 @@ export const SaveList = ({ list }) => {
     const handleDownloadClick = async () => {
 
         for (let i = 0; i < list.length; i++) {
-            const myUrl = list[i].url.props.src
+            const myUrl = list[i].url.props.href
             const response = await fetch(myUrl);
             response.blob().then(blob => {
                 var img = zip.folder("1. images");
